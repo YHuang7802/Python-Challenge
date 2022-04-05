@@ -65,7 +65,6 @@ with open(csvpath, encoding='utf') as csvfile:
 
     csv_header = next(csvfile)
     
-
     # * The total number of months included in the dataset
     for row in csvreader:
         # Read the header row first (skip this part if there is no header)
@@ -88,42 +87,31 @@ with open(csvpath, encoding='utf') as csvfile:
 
         date = row[0]
         dates.append(date)
-        # for greatest increases
-        if max_d['increase']["change"] < change:
-            max_d['increase']["change"] = change
-            max_d['increase']["date"] = row[0]
-
-        # for greatest decreases 
-        if max_d['decrease']["change"] > change:
-            max_d['decrease']["change"] = change
-            max_d['decrease']["date"] = row[0]
-
-        #if max p < cur month;
-            #max [m] = row[0]
-        # max p = cur month 
-        # * The changes in "Profit/Losses" over the entire period, and then the average of those changes
-        #h
-
+       
         # total amount of profit and loss
     
         net_month += int(row[1])
 
-        
-        
-
-        
+    # average change        
     avg_change = sum(changes) / len(changes)
     ans_avg_change= "{:.2f}".format(avg_change)
     ans_avg_change2 = f'{avg_change:.2f}'
 
-print("Financial Analysis")
-print("--------------------------------")
-print(f"Total Months: {len(dates)}")
-print(f"total: ${net_month}")
-print(f"Average Change ${ans_avg_change2}")
-# print(f"Greatest Increase in Profits: {max_d['increase']['date']} {max_d['change']}")
-# print(f"Greatest Decrease in Profits {max_d['date']} {max_d['profit']}")
-print(changes.index(max(changes)))
-
-# print(dates[changes.index(max(changes)) +1 ], max(changes))
-# print(max_d)
+with open ("Analysis/pybank_analysis.txt", "w") as file:
+    print("Financial Analysis")
+    file.write("Financial Analysis\n")
+    print("--------------------------------")
+    file.write("--------------------------------\n")
+    total_months = len(dates)
+    print(f"Total Months: {total_months}")
+    file.write(f"Total Months: {total_months}\n")
+    print(f"Total: ${net_month}")
+    file.write(f"Total: ${net_month}\n")
+    print(f"Average Change ${ans_avg_change2}")
+    file.write(f"Average Change ${ans_avg_change2}\n")
+    great_inc = dates[changes.index(max(changes))+1], max(changes)
+    print(f'Greatest Increase in Profits: {great_inc}')
+    file.write(f"Greatest Increase in Profits: {great_inc}\n")
+    great_dec = dates[changes.index(min(changes))+1], min(changes)
+    print(f'Greatest Decrease in Profits: {great_dec}\n')
+    file.write(f"Greatest Decrease in Profits: {great_dec}\n")

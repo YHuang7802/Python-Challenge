@@ -58,7 +58,7 @@ with open(csvpath, encoding='utf') as csvfile:
             votes[candidate] += 1
 
     
-with open ("Analysis/answer_analysis.txt", "w") as file:
+with open ("Analysis/pypoll_analysis.txt", "w") as file:
 
     print("Election Results")
     file.write("Election Results\n")

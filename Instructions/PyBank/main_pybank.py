@@ -9,26 +9,6 @@
 # * The greatest increase in profits (date and amount) over the entire period
 # * The greatest decrease in profits (date and amount) over the entire period
 
-# Modules
-import os
-import csv
-import statistics
-
-# initialize list to store data
-dates = []
-changes = []
-max_gain =[]
-max_loss =[]
-
-#initialize variable
-
-total_month = 0
-net_month = 0
-
-# Set path for file
-csvpath = os.path.join("Resources", "budget_data.csv")
-
-
 #step 1: read in csv X
 #step 2: initialization to assign X
     #step 2.1: initialize dates_list, dates =[]X
@@ -61,56 +41,89 @@ csvpath = os.path.join("Resources", "budget_data.csv")
         #step 6.4.1: index the row [0] and row [1] to each other, to do it by hand: scroll down row [1] to find the max value then look at the corresponding date
 
 
+# Modules
+import os
+import csv
+import statistics
+
+# initialize list to store data
+dates = []
+changes = []
+
+#initialize variable
+net_month = 0
+
+#initialize dictonary
+max_d ={"increase":{"date":"","change": 0}, "decrease":{"date":"","change":0}}
+min_d ={}
+# Set path for file
+csvpath = os.path.join("Resources", "budget_data.csv")
+
 # open csv 
 with open(csvpath, encoding='utf') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=",")
 
     csv_header = next(csvfile)
+    
+
     # * The total number of months included in the dataset
     for row in csvreader:
         # Read the header row first (skip this part if there is no header)
-        date = row[0]
-        dates.append(date)
-       
-
-        # * The changes in "Profit/Losses" over the entire period, and then the average of those changes
-        #how do I get current month minus previous month 
-        # variables for current month, previous month and change between months
-        # current month will be next iteration's previous month 
-        # change = current month - previous month
-        # initialize previous month as 0
-        
         cur_month = int(row[1])
+        # max_d[row[0]] = {'profit': row[1]}
         
-        if total_month > 0:
+        # len(dates) is only equal to 0 in on first row
+        if len(dates) == 0:
+            pre_month = cur_month
+        
+            change = 0
+
+        if len(dates) > 0:
 
             change = int(cur_month) - int(pre_month)
         
             changes.append(change)
-
+           
         pre_month = cur_month
 
-        total_month += 1
+        date = row[0]
+        dates.append(date)
+        # for greatest increases
+        if max_d['increase']["change"] < change:
+            max_d['increase']["change"] = change
+            max_d['increase']["date"] = row[0]
+
+        # for greatest decreases 
+        if max_d['decrease']["change"] > change:
+            max_d['decrease']["change"] = change
+            max_d['decrease']["date"] = row[0]
+
+        #if max p < cur month;
+            #max [m] = row[0]
+        # max p = cur month 
+        # * The changes in "Profit/Losses" over the entire period, and then the average of those changes
+        #h
 
         # total amount of profit and loss
     
         net_month += int(row[1])
 
-        # * The greatest increase in profits (date and amount) over the entire period
-        max_gain = max(changes)
-        
-        # * The greatest decrease in profits (date and amount) over the entire period
         
         
 
         
     avg_change = sum(changes) / len(changes)
     ans_avg_change= "{:.2f}".format(avg_change)
+    ans_avg_change2 = f'{avg_change:.2f}'
 
 print("Financial Analysis")
 print("--------------------------------")
 print(f"Total Months: {len(dates)}")
 print(f"total: ${net_month}")
-print(f"Average Change ${ans_avg_change}")
-print(f"Greatest Increase in Profits: {max_gain} ")
-print(f"Greatest Decrease in Profits {max_loss}")
+print(f"Average Change ${ans_avg_change2}")
+# print(f"Greatest Increase in Profits: {max_d['increase']['date']} {max_d['change']}")
+# print(f"Greatest Decrease in Profits {max_d['date']} {max_d['profit']}")
+print(changes.index(max(changes)))
+
+# print(dates[changes.index(max(changes)) +1 ], max(changes))
+# print(max_d)
